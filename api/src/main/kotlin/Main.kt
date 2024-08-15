@@ -9,7 +9,6 @@ import org.http4k.filter.CorsPolicy.Companion.UnsafeGlobalPermissive
 import org.http4k.filter.DebuggingFilters
 import org.http4k.filter.ServerFilters
 import org.http4k.format.Jackson
-import org.http4k.routing.routes
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 
