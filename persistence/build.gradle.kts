@@ -10,6 +10,9 @@ repositories {
 }
 
 dependencies {
+    implementation(platform("software.amazon.awssdk:bom:2.27.7"))
+    implementation("software.amazon.awssdk:dynamodb-enhanced")
+
     testImplementation(kotlin("test"))
 }
 
