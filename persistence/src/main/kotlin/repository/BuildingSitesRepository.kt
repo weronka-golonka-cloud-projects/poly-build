@@ -6,7 +6,6 @@ import com.weronka.golonka.model.BuildingSite
 import software.amazon.awssdk.enhanced.dynamodb.Key
 import software.amazon.awssdk.enhanced.dynamodb.model.PutItemEnhancedRequest
 import software.amazon.awssdk.enhanced.dynamodb.model.UpdateItemEnhancedRequest
-import java.util.*
 
 class BuildingSitesRepository(private val dynamoDbClientProvider: DynamoDbClientProvider) {
     private val buildingSitesTable = dynamoDbClientProvider.geBuildingSitesTable()

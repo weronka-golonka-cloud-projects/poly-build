@@ -9,10 +9,11 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 class DynamoDbClientProvider {
     private fun getDynamoDbClient(): DynamoDbClient {
         return DynamoDbClient.builder()
+            // TODO add credentials
             .build()
     }
 
-    fun getDynamoDbEnhancedClient(): DynamoDbEnhancedClient {
+    private fun getDynamoDbEnhancedClient(): DynamoDbEnhancedClient {
         return DynamoDbEnhancedClient.builder()
             .dynamoDbClient(getDynamoDbClient())
             .build()
