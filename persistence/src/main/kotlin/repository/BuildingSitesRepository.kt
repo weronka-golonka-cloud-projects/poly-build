@@ -1,54 +1,51 @@
 package com.weronka.golonka.repository
 
 import com.weronka.golonka.DynamoDbClientProvider
+import com.weronka.golonka.exceptions.BuildingSiteDoesNotExistsException
 import com.weronka.golonka.exceptions.UnexpectedError
-import com.weronka.golonka.model.BuildingSite
+import com.weronka.golonka.model.BuildingSites
 import software.amazon.awssdk.enhanced.dynamodb.Key
-import software.amazon.awssdk.enhanced.dynamodb.model.PutItemEnhancedRequest
-import software.amazon.awssdk.enhanced.dynamodb.model.UpdateItemEnhancedRequest
 
-class BuildingSitesRepository(private val dynamoDbClientProvider: DynamoDbClientProvider) {
+class BuildingSitesRepository(dynamoDbClientProvider: DynamoDbClientProvider) {
     private val buildingSitesTable = dynamoDbClientProvider.geBuildingSitesTable()
 
-    fun createBuildingSite(newBuildingSite: BuildingSite): BuildingSite =
+    fun createBuildingSite(newBuildingSite: BuildingSites): BuildingSites =
         runCatching {
-            val response = buildingSitesTable.putItemWithResponse(
-                PutItemEnhancedRequest
-                    .builder(BuildingSite::class.java)
-                    .item(newBuildingSite)
-                    .build()
-            )
+            buildingSitesTable.putItem(newBuildingSite)
 
-            response.attributes()
+            newBuildingSite
         }.getOrElse { throw UnexpectedError("Failed to create new Building Site", it) }
 
-    fun getBuildingSiteById(id: String): BuildingSite =
+    fun getBuildingSiteById(id: String): BuildingSites =
         runCatching {
             val key = Key.builder()
                 .partitionValue(id)
                 .build()
 
             buildingSitesTable.getItem(key)
-        }.getOrElse { throw UnexpectedError("Failed to get Building Site by id $id", it) }
+        }.fold({
+            if (it == null)
+                throw BuildingSiteDoesNotExistsException("Cannot get Building Site with id $id as it does not exist")
+            else return it
+            },
+            { throw UnexpectedError("Failed to get Building Site with id $id", it) })
 
-    fun updateBuildingSite(newBuildingSite: BuildingSite): BuildingSite =
+    fun updateBuildingSite(newBuildingSite: BuildingSites): BuildingSites =
         runCatching {
-            val response = buildingSitesTable.updateItemWithResponse(
-                UpdateItemEnhancedRequest
-                    .builder(BuildingSite::class.java)
-                    .item(newBuildingSite)
-                    .build()
-            )
-
-            response.attributes()
+            buildingSitesTable.updateItem(newBuildingSite)
         }.getOrElse { throw UnexpectedError("Failed to update Building Site ", it) }
 
-    fun deleteBuildingSite(id: String): BuildingSite =
+    fun deleteBuildingSite(id: String): BuildingSites =
         runCatching {
             val key = Key.builder()
                 .partitionValue(id)
                 .build()
 
             buildingSitesTable.deleteItem(key)
-        }.getOrElse { throw UnexpectedError("Failed to delete Building Site with id $id", it) }
+        }.fold({
+            if (it == null)
+                throw BuildingSiteDoesNotExistsException("Cannot delete Building Site with id $id as it does not exist")
+            else return it },
+            { throw UnexpectedError("Failed to delete Building Site with id $id", it) }
+        )
 }
