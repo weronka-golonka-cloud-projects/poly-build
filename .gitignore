@@ -1,2 +1,10 @@
+build/
+!**/src/**/build
+!**/test/**/build
+
 .gradle
+.gradletasknamecache
+
 .idea
+
+.kotlin

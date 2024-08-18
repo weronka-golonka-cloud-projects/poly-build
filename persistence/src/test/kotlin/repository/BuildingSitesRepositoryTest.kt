@@ -38,7 +38,6 @@ class BuildingSitesRepositoryTest : DescribeSpec({
                 localStack.secretKey
             )
                 .redirectErrorStream(true)
-                .inheritIO()
                 .start()
 
             process.waitFor()
