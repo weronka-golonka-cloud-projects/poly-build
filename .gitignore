@@ -3,7 +3,6 @@ build/
 !**/test/**/build
 
 .gradle
-!gradle-wrapper.jar
 .gradletasknamecache
 
 .idea
