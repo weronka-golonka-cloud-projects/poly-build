@@ -1,6 +1,8 @@
 package com.weronka.golonka
 
 import com.weronka.golonka.http.routes.splitBuildingWithLimitsRoute
+import com.weronka.golonka.repository.BuildingSitesRepository
+import com.weronka.golonka.service.BuildingLimitSplitter
 import org.http4k.contract.contract
 import org.http4k.contract.openapi.ApiInfo
 import org.http4k.contract.openapi.v3.OpenApi3
@@ -17,17 +19,33 @@ fun main(args: Array<String>) {
     val port = if (args.isNotEmpty()) args[0] else "5000"
     val baseUrl = if (args.size > 1) args[1] else "http://localhost:$port"
 
-    // init DB repository
-    // init service
+    val dynamoDbClientProvider =
+        DynamoDbClientProvider(
+            secretAccessKey = "TODO",
+            accessKeyId = "TODO",
+            region = "TODO",
+        )
+    val repository = BuildingSitesRepository(dynamoDbClientProvider)
+    val buildingLimitSplitter = BuildingLimitSplitter()
 
-    val globalFilters = DebuggingFilters.PrintRequestAndResponse().then(ServerFilters.Cors(UnsafeGlobalPermissive))
+    val globalFilters =
+        DebuggingFilters
+            .PrintRequestAndResponse()
+            .then(ServerFilters.Cors(UnsafeGlobalPermissive))
 
-    globalFilters.then(
-        contract {
-            renderer = OpenApi3(ApiInfo("My great API", "v1.0"), Jackson)
-            descriptionPath = "/openapi.json"
+    globalFilters
+        .then(
+            contract {
+                renderer = OpenApi3(ApiInfo("My great API", "v1.0"), Jackson)
+                descriptionPath = "/openapi.json"
 
-            routes += splitBuildingWithLimitsRoute()
-        }
-    ).asServer(Jetty(port.toInt())).start().block()
+                routes +=
+                    splitBuildingWithLimitsRoute(
+                        buildingLimitSplitter,
+                        repository,
+                    )
+            },
+        ).asServer(Jetty(port.toInt()))
+        .start()
+        .block()
 }
