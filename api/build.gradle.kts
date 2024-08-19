@@ -10,7 +10,12 @@ dependencies {
     implementation("org.http4k:http4k-contract")
     implementation("org.http4k:http4k-format-jackson")
 
-    implementation("com.mapbox.mapboxsdk:mapbox-sdk-geojson:5.8.0")
+//    implementation("com.mapbox.mapboxsdk:mapbox-sdk-geojson:5.8.0")
+    implementation("org.locationtech.jts:jts-core:1.19.0")
+    implementation("org.locationtech.jts.io:jts-io-common:1.19.0")
+    implementation("de.grundid.opendatalab:geojson-jackson:1.14")
+
+    implementation(project(":persistence"))
 
     testImplementation(kotlin("test"))
 }
