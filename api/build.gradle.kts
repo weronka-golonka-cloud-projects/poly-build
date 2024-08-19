@@ -15,9 +15,12 @@ dependencies {
     implementation("org.locationtech.jts.io:jts-io-common:1.19.0")
     implementation("de.grundid.opendatalab:geojson-jackson:1.14")
 
+    implementation("com.sksamuel.hoplite:hoplite-core:2.7.5")
+
     implementation(project(":persistence"))
 
     testImplementation(kotlin("test"))
+    testImplementation("io.kotest:kotest-framework-datatest:5.9.1")
 }
 
 kotlin {
