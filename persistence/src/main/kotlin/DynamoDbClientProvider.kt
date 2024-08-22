@@ -10,37 +10,38 @@ import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import java.net.URI
 
-class DynamoDbClientProvider(
-    private val endpointOverride: URI? = null,
-    private val secretAccessKey: String,
-    private val accessKeyId: String,
-    private val region: String
-) {
-    private fun getDynamoDbClient(): DynamoDbClient {
-        return DynamoDbClient.builder()
-            // TODO use STS?
-            .apply {
-                if (endpointOverride != null) {
-                    this.endpointOverride(endpointOverride)
-                }
-            }
-            .region(Region.of(region))
-            .credentialsProvider(
-                StaticCredentialsProvider.create(
-                    AwsBasicCredentials.create(
-                        secretAccessKey,
-                        accessKeyId
-                    )
-                )
-            )
-            .build()
-    }
+data class LocalAwsConfig(
+    val endpointOverride: URI,
+    val secretAccessKey: String,
+    val accessKeyId: String,
+    val region: String,
+)
 
-    private fun getDynamoDbEnhancedClient(): DynamoDbEnhancedClient {
-        return DynamoDbEnhancedClient.builder()
+class DynamoDbClientProvider(
+    private val localConfig: LocalAwsConfig? = null,
+) {
+    private fun getDynamoDbClient(): DynamoDbClient =
+        DynamoDbClient
+            .builder()
+            .apply {
+                if (localConfig != null) {
+                    endpointOverride(localConfig.endpointOverride)
+                    credentialsProvider(
+                        StaticCredentialsProvider.create(
+                            AwsBasicCredentials.create(
+                                localConfig.accessKeyId,
+                                localConfig.secretAccessKey,
+                            ),
+                        ),
+                    ).region(Region.of(localConfig.region))
+                }
+            }.build()
+
+    private fun getDynamoDbEnhancedClient(): DynamoDbEnhancedClient =
+        DynamoDbEnhancedClient
+            .builder()
             .dynamoDbClient(getDynamoDbClient())
             .build()
-    }
 
     fun geBuildingSitesTable(): DynamoDbTable<BuildingSites> {
         val tableSchema = TableSchema.fromBean(BuildingSites::class.java)

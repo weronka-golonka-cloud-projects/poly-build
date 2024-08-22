@@ -1,11 +1,13 @@
 package com.weronka.golonka.http.domain.dto
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.databind.annotation.JsonNaming
+import com.weronka.golonka.json.CustomJackson.autoBody
 import org.geojson.FeatureCollection
-import org.http4k.contract.openapi.OpenAPIJackson.auto
-import org.http4k.core.Body
 import com.weronka.golonka.model.BuildingSites as DbBuildingSite
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class SplitBuildingLimitsResponse(
     val id: String,
     val buildingLimits: FeatureCollection,
@@ -13,7 +15,7 @@ data class SplitBuildingLimitsResponse(
     val splitBuildingLimits: FeatureCollection,
 ) {
     companion object {
-        val lens = Body.auto<SplitBuildingLimitsResponse>().toLens()
+        val lens = autoBody<SplitBuildingLimitsResponse>().toLens()
 
         fun fromDbObject(obj: DbBuildingSite): SplitBuildingLimitsResponse {
             val mapper = ObjectMapper()

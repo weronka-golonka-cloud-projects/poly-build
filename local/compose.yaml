@@ -1,0 +1,16 @@
+services:
+  localstack:
+    container_name: "local-aws"
+    image: localstack/localstack:stable
+    ports:
+      - "127.0.0.1:4566:4566"
+    environment:
+      - DEBUG=1
+      - SERVICES=dynamodb,lambda,iam,apigateway,cloudwatch,logs
+    volumes:
+      - "./local-aws/init.sh:/etc/localstack/init/ready.d/init.sh"
+      - "./local-aws/assume-role-policy.json:/etc/localstack/init/ready.d/assume-role-policy.json"
+      - "./local-aws/env.json:/etc/localstack/init/ready.d/env.json"
+      - "../api/build/distributions/api.zip:/etc/localstack/init/ready.d/target/api.zip"
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"

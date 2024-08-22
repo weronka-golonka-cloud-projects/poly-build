@@ -6,10 +6,13 @@ import com.weronka.golonka.http.domain.dto.ErrorResponse
 import com.weronka.golonka.http.domain.dto.asResponse
 import com.weronka.golonka.service.CalculatingSplitsFailedException
 import com.weronka.golonka.service.InaccurateHeightPlateausException
+import mu.KotlinLogging
 import org.http4k.core.Filter
 import org.http4k.core.HttpHandler
 import org.http4k.core.Request
 import org.http4k.core.Status
+
+private val logger = KotlinLogging.logger {}
 
 val catchExceptionsFilter =
     Filter { next: HttpHandler ->
@@ -17,6 +20,7 @@ val catchExceptionsFilter =
             try {
                 next(request)
             } catch (error: Throwable) {
+                logger.error { "Catch exceptions filter: ${error.printStackTrace()}" }
                 if (error is Exception) {
                     when (error) {
                         is InaccurateHeightPlateausException ->
