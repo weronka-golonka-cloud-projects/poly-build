@@ -1,6 +1,5 @@
 import sys
 import unittest
-from sre_constants import error
 
 import boto3
 
