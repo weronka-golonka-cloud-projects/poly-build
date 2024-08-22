@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "2.0.0" apply false
     kotlin("plugin.serialization") version "2.0.0" apply false
+    id("com.bmuschko.docker-remote-api") version "9.4.0" apply false
 }
 
 subprojects {
