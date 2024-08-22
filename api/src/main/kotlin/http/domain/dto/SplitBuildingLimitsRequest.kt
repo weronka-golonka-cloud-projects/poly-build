@@ -1,14 +1,16 @@
 package com.weronka.golonka.http.domain.dto
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.databind.annotation.JsonNaming
+import com.weronka.golonka.json.CustomJackson.autoBody
 import org.geojson.FeatureCollection
-import org.http4k.contract.openapi.OpenAPIJackson.auto
-import org.http4k.core.Body
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class SplitBuildingLimitsRequest(
     val buildingLimits: FeatureCollection,
     val heightPlateaus: FeatureCollection,
 ) {
     companion object {
-        val lens = Body.auto<SplitBuildingLimitsRequest>().toLens()
+        val lens = autoBody<SplitBuildingLimitsRequest>().toLens()
     }
 }

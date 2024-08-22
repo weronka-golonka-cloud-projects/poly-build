@@ -6,12 +6,13 @@ import org.geojson.FeatureCollection
 import org.geojson.LngLatAlt
 import org.geojson.Polygon
 import org.locationtech.jts.geom.GeometryFactory
+import org.locationtech.jts.geom.PrecisionModel
 import org.locationtech.jts.io.geojson.GeoJsonReader
 import org.locationtech.jts.io.geojson.GeoJsonWriter
 
 class BuildingLimitSplitter {
     private val mapper = ObjectMapper()
-    private val geoJsonReader = GeoJsonReader(GeometryFactory())
+    private val geoJsonReader = GeoJsonReader(GeometryFactory(PrecisionModel(PrecisionModel.maximumPreciseValue)))
     private val geoJsonWriter = GeoJsonWriter()
 
     init {
@@ -33,11 +34,13 @@ class BuildingLimitSplitter {
             buildingLimits.features.forEach { limit ->
                 val limitsAsString = mapper.writeValueAsString(limit.geometry)
                 val limitsAsGeometry = geoJsonReader.read(limitsAsString)
+                println("GEOMETRY: $limitsAsGeometry")
 
                 val intersectionsToProperties =
                     heightPlateausGeometryToProperties
                         .mapNotNull { (h, p) ->
                             val intersection = limitsAsGeometry.intersection(h)
+                            println("INTERSECTION: $intersection")
                             if (intersection.isEmpty) {
                                 null
                             } else {
@@ -49,7 +52,7 @@ class BuildingLimitSplitter {
                         first.union(second)
                     }
 
-                if (!asSingleIntersection.covers(limitsAsGeometry)) {
+                if (!asSingleIntersection.equalsTopo(limitsAsGeometry)) {
                     throw InaccurateHeightPlateausException(
                         "Provided height plateaus do not cover the building limits," +
                             "Building Limit: $limitsAsString\n" +
