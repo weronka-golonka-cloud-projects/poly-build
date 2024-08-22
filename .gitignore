@@ -10,3 +10,6 @@ build/
 .kotlin
 
 local/volume/
+
+.terraform.lock.hcl
+.terraform/
