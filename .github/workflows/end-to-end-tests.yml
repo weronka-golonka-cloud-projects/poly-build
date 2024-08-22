@@ -41,5 +41,5 @@ jobs:
         run: |
           cd local
           make up
-          sleep 15
+          sleep 40
           make e2e-tests
