@@ -2,6 +2,8 @@ services:
   localstack:
     container_name: "local-aws"
     image: localstack/localstack:stable
+    networks:
+      - poly_build_network
     ports:
       - "127.0.0.1:4566:4566"
     environment:
@@ -14,3 +16,7 @@ services:
       - "../api/build/distributions/api.zip:/etc/localstack/init/ready.d/target/api.zip"
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+
+networks:
+  poly_build_network:
+    driver: bridge

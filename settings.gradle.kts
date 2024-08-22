@@ -3,3 +3,4 @@ plugins {
 }
 include("api")
 include("persistence")
+include("end-to-end-tests")
