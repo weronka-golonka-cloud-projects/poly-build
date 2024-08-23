@@ -27,7 +27,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Run plan
-        working-directory: /infra
+        working-directory: infra
         run: |
           pwd
           terraform init
