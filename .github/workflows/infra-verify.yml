@@ -19,7 +19,7 @@ jobs:
       - name: Setup AWS access
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          audience: sts.amazonaws.com.cn
+          audience: sts.amazonaws.com
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ secrets.AWS_REPO_IAM_ROLE_ARN }}
 
