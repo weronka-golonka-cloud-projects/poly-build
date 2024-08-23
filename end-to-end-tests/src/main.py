@@ -13,7 +13,7 @@ def main():
 
     API_STAGE="local"
     REST_API_ID=apis['items'][0]['id']
-    URL=f"{ENDPOINT_URL}/restapis/{REST_API_ID}/{API_STAGE}/_user_request_/split"
+    URL=f"{ENDPOINT_URL}/restapis/{REST_API_ID}/{API_STAGE}/_user_request_/building-sites"
 
     suite=unittest.TestSuite([
         PolyBuildAPITestCases(URL, "test_valid_request"),

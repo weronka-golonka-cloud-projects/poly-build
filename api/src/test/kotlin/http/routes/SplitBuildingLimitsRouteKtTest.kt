@@ -41,7 +41,7 @@ class SplitBuildingLimitsRouteKtTest :
         it("should return http 201 on successful division") {
             val response =
                 handler(
-                    Request(Method.POST, "http://test-url/split").with(
+                    Request(Method.POST, "http://test-url/building-sites").with(
                         SplitBuildingLimitsRequest.lens of
                             SplitBuildingLimitsRequest(
                                 buildingLimits = FeatureCollection(),
@@ -56,7 +56,7 @@ class SplitBuildingLimitsRouteKtTest :
         it("should return http 400 if body request is invalid") {
             val response =
                 handler(
-                    Request(Method.POST, "http://test-url/split").body("Invalid body"),
+                    Request(Method.POST, "http://test-url/building-sites").body("Invalid body"),
                 )
 
             response.status shouldBe Status.BAD_REQUEST
