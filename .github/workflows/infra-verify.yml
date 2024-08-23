@@ -1,0 +1,33 @@
+name: Infra verification
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  infra-verify:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup AWS access
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          audience: sts.amazonaws.com
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_REPO_IAM_ROLE_ARN }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Run plan
+        run: |
+          cd infra
+          terraform init
+          terraform plan
