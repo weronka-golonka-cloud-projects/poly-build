@@ -27,7 +27,8 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Run plan
+        working-directory: ${GITHUB_WORKSPACE}/infra
         run: |
-          cd infra
+          pwd
           terraform init
           terraform plan
