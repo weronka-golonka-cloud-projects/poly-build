@@ -32,6 +32,7 @@ jobs:
       - name: Run plan
         working-directory: infra
         run: |
-          pwd
           terraform init
-          terraform plan
+          terraform plan \
+            -lock=true \
+            -refresh=true

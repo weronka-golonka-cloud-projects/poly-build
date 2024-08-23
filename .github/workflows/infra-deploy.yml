@@ -33,5 +33,8 @@ jobs:
         run: |
           cd infra
           terraform init
-          terraform plan -out=tfplan
+          terraform plan \
+            -out=tfplan \
+            -lock=true \
+            -refresh=true
           terraform apply tfplan
