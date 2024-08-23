@@ -1,0 +1,22 @@
+name: Infra verification
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  infra-verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Run plan
+        run: |
+          cd infra
+          terraform init
+          terraform plan
