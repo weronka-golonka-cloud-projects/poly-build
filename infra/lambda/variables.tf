@@ -7,6 +7,6 @@ variable "account_id" {
 }
 
 variable "building_sites_table_arn" {
-  type = string
+  type        = string
   description = "ARN of the BuildingSites DynamoDB table"
 }

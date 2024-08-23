@@ -10,19 +10,24 @@ resource "aws_iam_role" "lambda_role" {
         Principal = {
           Service = "lambda.amazonaws.com"
         }
-      },
-      {
-        Effect = "Allow",
-        Action = [
-          "dynamodb:PutItem",
-          "dynamodb:GetItem",
-          "dynamodb:UpdateItem",
-          "dynamodb:DeleteItem"
-        ],
-        "Resource" : var.building_sites_table_arn
       }
     ],
   })
+}
+
+resource "aws_iam_policy" "dynamodb_table_access" {
+  name   = "poly-build-api-dynamodb-access"
+  policy = data.aws_iam_policy_document.dynamodb_table_access.json
+}
+
+resource "aws_iam_role_policy_attachment" "dynamodb_table_access" {
+  policy_arn = aws_iam_policy.dynamodb_table_access.arn
+  role       = aws_iam_role.lambda_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatch" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  role       = aws_iam_role.lambda_role.name
 }
 
 resource "aws_lambda_function" "poly_build_api" {
@@ -31,8 +36,8 @@ resource "aws_lambda_function" "poly_build_api" {
   handler       = "com.weronka.golonka.PolyBuildApi"
   memory_size   = 512
 
-  filename         = "../api/build/distributions/api.zip "
-  #source_code_hash = filebase64sha256("../api/build/distributions/api.zip ")
+  filename         = local.lambda_zip_path
+  source_code_hash = filebase64sha256(local.lambda_zip_path)
 
   role = aws_iam_role.lambda_role.arn
 
@@ -48,14 +53,6 @@ resource "aws_lambda_permission" "allow_apigateway_invocation" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.poly_build_api.function_name
   principal     = "apigateway.amazonaws.com"
-}
-
-resource "aws_lambda_permission" "allow_logs_invocation" {
-  statement_id  = "log-permission"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.poly_build_api.function_name
-  principal     = "logs.amazonaws.com"
-  source_arn    = "arn:aws:logs:${var.aws_region}:${var.account_id}:log-group:/aws/lambda/poly-build-api"
 }
 
 output "poly_build_lambda_arn" {
