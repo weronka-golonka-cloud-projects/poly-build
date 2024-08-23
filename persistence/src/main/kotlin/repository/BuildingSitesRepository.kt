@@ -32,8 +32,22 @@ class BuildingSitesRepository(dynamoDbClientProvider: DynamoDbClientProvider) {
 
     fun updateBuildingSite(newBuildingSite: BuildingSites): BuildingSites =
         runCatching {
-            buildingSitesTable.updateItem(newBuildingSite)
-        }.getOrElse { throw UnexpectedError("Failed to update Building Site ", it) }
+            val key = Key.builder()
+                .partitionValue(newBuildingSite.id)
+                .build()
+
+            val currentVersion = buildingSitesTable.getItem(key).also {
+                if (it == null) throw BuildingSiteDoesNotExistsException("Building site with id ${newBuildingSite.id} does not exist")
+            }
+            buildingSitesTable.updateItem(currentVersion.copy(
+                buildingLimits = newBuildingSite.buildingLimits,
+                heightPlateaus = newBuildingSite.heightPlateaus,
+                splitBuildingLimits = newBuildingSite.splitBuildingLimits
+            ))
+        }.getOrElse {
+            if (it is BuildingSiteDoesNotExistsException) throw it
+            else throw UnexpectedError("Failed to updated Building site", it)
+        }
 
     fun deleteBuildingSite(id: String): BuildingSites =
         runCatching {

@@ -17,7 +17,7 @@ data class BuildingSite(
             id = this.id.toString(),
             buildingLimits = mapper.writeValueAsString(this.buildingLimits),
             heightPlateaus = mapper.writeValueAsString(this.heightPlateaus),
-            splitBuildingLimits = mapper.writeValueAsString(this.splitBuildingLimits),
+            splitBuildingLimits = mapper.writeValueAsString(this.splitBuildingLimits)
         )
     }
 }
