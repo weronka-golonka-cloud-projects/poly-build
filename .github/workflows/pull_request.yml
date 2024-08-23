@@ -1,13 +1,23 @@
-name: Infra verification
+name: Pull Request
 
 on:
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  infra-verify:
+  build:
+    uses: ./.github/workflows/build.yml
+
+  end-to-end-tests:
+    uses: ./.github/workflows/end-to-end-tests.yml
+
+  verify-infra:
     runs-on: ubuntu-latest
 
+    needs:
+      - build
+      - end-to-end-tests
     permissions:
       id-token: write
       contents: read
