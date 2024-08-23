@@ -5,8 +5,29 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  infra-deploy:
     runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
     steps:
-      - name: TBD
-        run: echo "TBD"
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup AWS access
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          audience: sts.amazonaws.com
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_REPO_IAM_ROLE_ARN }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Run apply
+        run: |
+          cd infra
+          terraform plan -out=tfplan
+          terraform apply tfplan
