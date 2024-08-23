@@ -54,11 +54,11 @@ REST_API_ID=$(awslocal apigateway create-rest-api --name poly-build-api-gateway 
 ROOT_ID=$(awslocal apigateway get-resources --rest-api-id "$REST_API_ID" --query "items[?path=='/'].id" --output text)
 
 # POST ENDPOINT
-echo "EXPOSE SPLIT ENDPOINT"
+echo "EXPOSE BUILDING_SITES ENDPOINT"
 SPLIT_ENDPOINT_RESOURCE_ID=$(awslocal apigateway create-resource \
     --rest-api-id $REST_API_ID \
     --parent-id $ROOT_ID \
-    --path-part "split" | jq -r '.id')
+    --path-part "building-sites" | jq -r '.id')
 
 awslocal apigateway put-method \
     --rest-api-id $REST_API_ID \

@@ -114,8 +114,8 @@ fun splitBuildingWithLimitsRoute(
                 splitBuildingLimits = exampleSplit,
             )
 
-    return "/split" meta {
-        summary = "Divides building limits according to provided height plateaus"
+    return "/building-sites" meta {
+        summary = "Creates Building Sites with divided building limits according to provided height plateaus"
         receiving(exampleBody)
         returning(Status.CREATED, exampleResponse)
     } bindContract Method.POST to { req: Request ->
