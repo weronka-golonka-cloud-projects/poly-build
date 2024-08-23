@@ -24,6 +24,6 @@ resource "aws_apigatewayv2_route" "openapi_endpoint" {
 
 resource "aws_apigatewayv2_route" "split_endpoint" {
   api_id    = aws_apigatewayv2_api.poly_build_api_gateway.id
-  route_key = "POST /split"
+  route_key = "POST /building-sites"
   target = "integrations/${aws_apigatewayv2_integration.poly_build_api_integration.id}"
 }
