@@ -10,12 +10,18 @@ module "poly_build_api_lambda" {
   building_sites_table_arn = module.building_sites_table.building_sites_arn
 }
 
-module "poly_build_api_gateway" {
-  source = "./api-gateway"
+# module "poly_build_api_gateway" {
+#   source = "./api-gateway"
+#
+#   aws_region = "eu-north-1"
+#   account_id = ""
+#   poly_build_lambda_arn = module.poly_build_api_lambda.poly_build_lambda_arn
+#   poly_build_lambda_name = module.poly_build_api_lambda.poly_build_lambda_name
+#   stage_name = "dev"
+# }
 
-  aws_region = "eu-north-1"
-  account_id = ""
+module "poly_build_api_gateway_v2" {
+  source = "./api-gatewayv2"
+
   poly_build_lambda_arn = module.poly_build_api_lambda.poly_build_lambda_arn
-  poly_build_lambda_name = module.poly_build_api_lambda.poly_build_lambda_name
-  stage_name = "dev"
 }

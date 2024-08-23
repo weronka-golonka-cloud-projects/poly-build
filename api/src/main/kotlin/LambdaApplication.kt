@@ -22,6 +22,7 @@ import org.http4k.core.HttpHandler
 import org.http4k.core.Status
 import org.http4k.core.then
 import org.http4k.filter.CorsPolicy.Companion.UnsafeGlobalPermissive
+import org.http4k.filter.DebuggingFilters
 import org.http4k.filter.ServerFilters
 import org.http4k.serverless.AppLoader
 
@@ -51,8 +52,8 @@ fun polyBuildApp(
     buildingLimitSplitter: BuildingLimitSplitter,
 ): HttpHandler {
     val globalFilters =
-        ServerFilters
-            .Cors(UnsafeGlobalPermissive)
+        DebuggingFilters.PrintRequestAndResponse()
+            .then(ServerFilters.Cors(UnsafeGlobalPermissive))
             .then(
                 ServerFilters.CatchLensFailure { lensFailure ->
                     logger.error { "Caught Lens Failure: ${lensFailure.printStackTrace()}" }
