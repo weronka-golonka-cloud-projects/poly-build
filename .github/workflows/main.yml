@@ -1,12 +1,22 @@
-name: Infra
+name: Main
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  infra-deploy:
+  build:
+    uses: ./.github/workflows/build.yml
+
+  end-to-end-tests:
+    uses: ./.github/workflows/end-to-end-tests.yml
+
+  deploy-infra:
     runs-on: ubuntu-latest
+
+    needs:
+      - build
+      - end-to-end-tests
 
     permissions:
       id-token: write
@@ -29,7 +39,7 @@ jobs:
       - name: Build Lambda
         run: ./gradlew buildLambdaZip
 
-      - name: Run apply
+      - name: Deploy infra
         run: |
           cd infra
           terraform init
