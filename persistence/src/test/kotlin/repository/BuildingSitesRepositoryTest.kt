@@ -103,11 +103,26 @@ class BuildingSitesRepositoryTest :
                     splitBuildingLimits = testBuildingSite.splitBuildingLimits,
                 )
 
-            it("should return updated Building Site object on successful update") {
+            it("should update version id") {
+                repository.createBuildingSite(testBuildingSite)
                 val result = repository.updateBuildingSite(newBuildingSite)
 
+                result.version shouldBe 2
+            }
+
+            it("should return updated Building Site object on successful update") {
+                repository.createBuildingSite(testBuildingSite)
+                val result = repository.updateBuildingSite(newBuildingSite)
+
+                dynamoDbProvider.geBuildingSitesTable().scan().items().toList().size shouldBe 1
                 result.id shouldBe newBuildingSite.id
                 result.heightPlateaus shouldBe newBuildingSite.heightPlateaus
+            }
+
+            it("should throw BuildingSiteDoesNotExistsException when updating Building Site that doesn't exist") {
+                shouldThrow<BuildingSiteDoesNotExistsException> {
+                    repository.updateBuildingSite(testBuildingSite)
+                }
             }
         }
 
