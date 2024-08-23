@@ -26,6 +26,9 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - name: Build Lambda
+        run: ./gradlew buildLambdaZip
+
       - name: Run apply
         run: |
           cd infra
