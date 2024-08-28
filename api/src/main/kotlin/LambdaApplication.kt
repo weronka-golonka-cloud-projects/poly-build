@@ -33,7 +33,6 @@ object LambdaApplication : AppLoader {
         logger.info { "Initializing config with env $env" }
         val config = Configuration.load(env)
 
-        // TODO use IAM
         logger.info { "Starting DynamoDB client provider" }
         val dynamoDbClientProvider = DynamoDbClientProvider(config.localAwsConfig)
 
