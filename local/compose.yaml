@@ -1,7 +1,7 @@
 services:
   localstack:
     container_name: "local-aws"
-    image: localstack/localstack:stable
+    image: localstack/localstack:3.7.0
     networks:
       - poly_build_network
     ports:
