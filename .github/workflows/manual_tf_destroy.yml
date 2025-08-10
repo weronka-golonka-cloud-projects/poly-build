@@ -31,22 +31,6 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform Plan
-        id: plan
-        run: |
-          cd infra
-          terraform init
-          terraform plan \
-            -out=tfplan \
-            -lock=true \
-            -refresh=true
-
-      - name: Upload Terraform Plan
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan
-          path: tfplan
-
       - name: Manual Approval
         uses: trstringer/manual-approval@v1
         with:
